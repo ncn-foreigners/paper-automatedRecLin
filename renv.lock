@@ -342,11 +342,11 @@
       "Author": "First Last [aut, cre]",
       "Maintainer": "First Last <first.last@example.com>",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
       "RemoteUsername": "ncn-foreigners",
       "RemoteRepo": "automatedRecLin",
       "RemoteRef": "main",
-      "RemoteSha": "a42b97d704488e8791f17c4ae49cf1552eff9048"
+      "RemoteSha": "d099b7d77927a93c34d3968ef1ee5fb211b81ead",
+      "RemoteHost": "api.github.com"
     },
     "base64enc": {
       "Package": "base64enc",

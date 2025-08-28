@@ -12,6 +12,7 @@ library(readr)
 library(phonics)
 library(tidyr)
 library(knitr)
+library(reclin2)
 ```
 
 Reading and cleaning data. Creating Soundex columns.
@@ -112,6 +113,8 @@ set(matches_8, j = "PERSON_ID", value = NULL)
 
 ### `set_construction = "size"`
 
+`result_8_b` and `result_soundex_8_b` were obtained using the existing method. `result_8_cpar`, `result_8_cnonpar` and `result_8_cnonpar_hurdle` were obtained using the proposed method.
+
 ```{r}
 set.seed(1)
 result_8_b <- mec(prd_sample_8, cis_sample_8,
@@ -170,6 +173,8 @@ kable(table_8_size)
 ```
 
 ### `set_construction = "flr"`, `target_flr = 0.03`
+
+`result_8_b_flr_03` and `result_soundex_8_b_flr_03` were obtained using the existing method. `result_8_cpar_flr_03`, `result_8_cnonpar_flr_03` and `result_8_cnonpar_hurdle_flr_03` were obtained using the proposed method.
 
 ```{r}
 set.seed(1)
@@ -235,8 +240,10 @@ kable(table_8_flr_03)
 
 ### `set_construction = "flr"`, `target_flr = 0.05`
 
+`result_8_b_flr_05` and `result_soundex_8_b_flr_05` were obtained using the existing method. `result_8_cpar_flr_05`, `result_8_cnonpar_flr_05` and `result_8_cnonpar_hurdle_flr_05` were obtained using the proposed method.
+
 ```{r}
-set.seed(123)
+set.seed(1)
 result_8_b_flr_05 <- mec(prd_sample_8, cis_sample_8,
                          variables = variables,
                          true_matches = matches_8,
@@ -301,5 +308,26 @@ results_8_flr_05 <- list(
 )
 table_8_flr_05 <- data.frame(round(do.call(rbind, results_8_flr_05) * 100, 4))
 kable(table_8_flr_05)
+```
+
+### Fellegi-Sunter model
+
+```{r}
+set.seed(1)
+pairs_8 <- pair(prd_soundex_sample_8, cis_soundex_sample_8)
+compare_pairs(pairs_8, on = variables_soundex, inplace = TRUE)
+model <- problink_em(~ P11 + P12 + P13 + P14 + P21 + P22 + P23 + P24 + SEX + DOB_DAY + DOB_MON + DOB_YEAR, data = pairs_8)
+pairs_8 <- predict(model, pairs_8, type = "mpost", add = TRUE, binary = TRUE)
+pairs_8 <- select_n_to_m(pairs_8, "ntom", "mpost", 0.95)
+setDT(pairs_8)
+pairs_8 <- pairs_8[ntom == TRUE, ]
+pairs_8 <- pairs_8[, c(".x", ".y")]
+setnames(pairs_8, c(".x", ".y"), c("a", "b"))
+
+f_s_8_eval <- evaluation(pairs_8, matches_8, n = NROW(prd_soundex_sample_8) * NROW(cis_soundex_sample_8))
+f_s_8_metrics <- get_metrics(f_s_8_eval[[1]], f_s_8_eval[[2]], f_s_8_eval[[3]], f_s_8_eval[[4]])
+table_fs_8 <- data.frame(rbind(round(c(n_M_est = NROW(pairs_8), (unlist(f_s_8_metrics) * 100)), 2)))
+rownames(table_fs_8) <- "fellegi_sunter"
+kable(table_fs_8)
 ```
 

@@ -3,6 +3,7 @@ library(data.table)
 library(readr)
 library(phonics)
 library(tidyr)
+library(reclin2)
 
 census <- read_csv("data-raw/census.csv")
 cis <- read_csv("data-raw/cis.csv")
@@ -235,3 +236,20 @@ results_8_flr_05 <- list(
   "cnonpar_hurdle" = metrics_8_cnonpar_hurdle_flr_05
 )
 table_8_flr_05 <- data.frame(round(do.call(rbind, results_8_flr_05) * 100, 4))
+
+# F-S
+
+pairs_8 <- pair(prd_soundex_sample_8, cis_soundex_sample_8)
+compare_pairs(pairs_8, on = variables_soundex, inplace = TRUE)
+model <- problink_em(~ P11 + P12 + P13 + P14 + P21 + P22 + P23 + P24 + SEX + DOB_DAY + DOB_MON + DOB_YEAR, data = pairs_8)
+pairs_8 <- predict(model, pairs_8, type = "mpost", add = TRUE, binary = TRUE)
+pairs_8 <- select_n_to_m(pairs_8, "ntom", "mpost", 0.95)
+setDT(pairs_8)
+pairs_8 <- pairs_8[ntom == TRUE, ]
+pairs_8 <- pairs_8[, c(".x", ".y")]
+setnames(pairs_8, c(".x", ".y"), c("a", "b"))
+
+f_s_8_eval <- evaluation(pairs_8, matches_8, n = NROW(prd_soundex_sample_8) * NROW(cis_soundex_sample_8))
+f_s_8_metrics <- get_metrics(f_s_8_eval[[1]], f_s_8_eval[[2]], f_s_8_eval[[3]], f_s_8_eval[[4]])
+table_fs_8 <- data.frame(rbind(round(c(n_M_est = NROW(pairs_8), (unlist(f_s_8_metrics) * 100)), 2)))
+rownames(table_fs_8) <- "fellegi_sunter"

@@ -11,7 +11,7 @@
 
 
 
-<title>Simulation study, Scenario-I, p_A ~ 0.8</title>
+<title>Simulation study, Scenario-I, p_A ~ 0.3</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,7 +349,7 @@ display: none;
 
 
 <h1 class="title toc-ignore">Simulation study, Scenario-I, p_A ~
-0.8</h1>
+0.3</h1>
 
 </div>
 
@@ -430,87 +430,87 @@ methods_cnonpar &lt;- list(
   &quot;PERNAME2&quot; = &quot;continuous_nonparametric&quot;
 )</code></pre>
 <p>Sampling.</p>
-<pre class="r"><code>set.seed(1)
-p_A_8 &lt;- 0.8
-n_0_8 &lt;- n_B / p_A_8
-ids_sample_8 &lt;- sample(ids, n_0_8)
+<pre class="r"><code>set.seed(1111)
+p_A_3 &lt;- 0.3
+n_0_3 &lt;- n_B / p_A_3
+ids_sample_3 &lt;- sample(ids, n_0_3)
 
-ids_prd_8 &lt;- sample(ids_sample_8, n_A)
-ids_cis_8 &lt;- sample(ids_sample_8, n_B)
+ids_prd_3 &lt;- sample(ids_sample_3, n_A)
+ids_cis_3 &lt;- sample(ids_sample_3, n_B)
 
-prd_sample_8 &lt;- prd[PERSON_ID %in% ids_prd_8, ]
-cis_sample_8 &lt;- cis[PERSON_ID %in% ids_cis_8, ]
-prd_soundex_sample_8 &lt;- prd_soundex[PERSON_ID %in% ids_prd_8, ]
-cis_soundex_sample_8 &lt;- cis_soundex[PERSON_ID %in% ids_cis_8, ]
+prd_sample_3 &lt;- prd[PERSON_ID %in% ids_prd_3, ]
+cis_sample_3 &lt;- cis[PERSON_ID %in% ids_cis_3, ]
+prd_soundex_sample_3 &lt;- prd_soundex[PERSON_ID %in% ids_prd_3, ]
+cis_soundex_sample_3 &lt;- cis_soundex[PERSON_ID %in% ids_cis_3, ]
 
-matches_8 &lt;- merge(x = prd_sample_8[, .(x=1:.N, PERSON_ID)],
-                   y = cis_sample_8[, .(y = 1:.N, PERSON_ID)],
+matches_3 &lt;- merge(x = prd_sample_3[, .(x=1:.N, PERSON_ID)],
+                   y = cis_sample_3[, .(y = 1:.N, PERSON_ID)],
                    by = &quot;PERSON_ID&quot;)
-setnames(matches_8, c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;, &quot;b&quot;))
-set(matches_8, j = &quot;PERSON_ID&quot;, value = NULL)</code></pre>
+setnames(matches_3, c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;, &quot;b&quot;))
+set(matches_3, j = &quot;PERSON_ID&quot;, value = NULL)</code></pre>
 <ul>
-<li>478 rows in <code>prd_sample_8</code> and
-<code>prd_soundex_sample_8</code> datasets.</li>
-<li>942 rows in <code>cis_sample_8</code> and
-<code>cis_soundex_sample_8</code> datasets.</li>
-<li>362 matches.</li>
+<li>476 rows in <code>prd_sample_3</code> and
+<code>prd_soundex_sample_3</code> datasets.</li>
+<li>956 rows in <code>cis_sample_3</code> and
+<code>cis_soundex_sample_3</code> datasets.</li>
+<li>126 matches.</li>
 </ul>
 <div id="set_construction-size" class="section level3">
 <h3><code>set_construction = &quot;size&quot;</code></h3>
-<p><code>result_8_b</code> and <code>result_soundex_8_b</code> were
-obtained using the existing method. <code>result_8_cpar</code>,
-<code>result_8_cnonpar</code> and <code>result_8_cnonpar_hurdle</code>
+<p><code>result_3_b</code> and <code>result_soundex_3_b</code> were
+obtained using the existing method. <code>result_3_cpar</code>,
+<code>result_3_cnonpar</code> and <code>result_3_cnonpar_hurdle</code>
 were obtained using the proposed method.</p>
-<pre class="r"><code>set.seed(1)
-result_8_b &lt;- mec(prd_sample_8, cis_sample_8,
+<pre class="r"><code>set.seed(1111)
+result_3_b &lt;- mec(prd_sample_3, cis_sample_3,
                   variables = variables,
-                  true_matches = matches_8)
-result_soundex_8_b &lt;- mec(prd_soundex_sample_8, cis_soundex_sample_8,
+                  true_matches = matches_3)
+result_soundex_3_b &lt;- mec(prd_soundex_sample_3, cis_soundex_sample_3,
                           variables = variables_soundex,
-                          true_matches = matches_8)
-result_8_cpar &lt;- mec(prd_sample_8, cis_sample_8,
+                          true_matches = matches_3)
+result_3_cpar &lt;- mec(prd_sample_3, cis_sample_3,
                      variables = variables,
-                     true_matches = matches_8,
+                     true_matches = matches_3,
                      comparators = comparators,
                      methods = methods_cpar)
-result_8_cnonpar &lt;- mec(prd_sample_8, cis_sample_8,
+result_3_cnonpar &lt;- mec(prd_sample_3, cis_sample_3,
                         variables = variables,
-                        true_matches = matches_8,
+                        true_matches = matches_3,
                         comparators = comparators,
                         methods = methods_cnonpar)
-result_8_cnonpar_hurdle &lt;- mec(prd_sample_8, cis_sample_8,
+result_3_cnonpar_hurdle &lt;- mec(prd_sample_3, cis_sample_3,
                                variables = variables,
-                               true_matches = matches_8,
+                               true_matches = matches_3,
                                comparators = comparators,
                                methods = methods_cnonpar,
                                nonpar_hurdle = TRUE)
 
-# result_8_b
-# result_soundex_8_b
-# result_8_cpar
-# result_8_cnonpar
-# result_8_cnonpar_hurdle</code></pre>
+# result_3_b
+# result_soundex_3_b
+# result_3_cpar
+# result_3_cnonpar
+# result_3_cnonpar_hurdle</code></pre>
 <p>Comparison.</p>
-<pre class="r"><code>metrics_8_b &lt;- unlist(c(n_M_est = result_8_b$n_M_est / 100, flr_est = result_8_b$flr_est,
-                        mmr_est = result_8_b$mmr_est, unlist(result_8_b$eval_metrics)))
-metrics_soundex_8_b &lt;- unlist(c(n_M_est = result_soundex_8_b$n_M_est / 100, flr_est = result_soundex_8_b$flr_est,
-                        mmr_est = result_soundex_8_b$mmr_est, unlist(result_soundex_8_b$eval_metrics)))
-metrics_8_cpar &lt;- unlist(c(n_M_est = result_8_cpar$n_M_est / 100, flr_est = result_8_cpar$flr_est,
-                        mmr_est = result_8_cpar$mmr_est, unlist(result_8_cpar$eval_metrics)))
-metrics_8_cnonpar &lt;- unlist(c(n_M_est = result_8_cnonpar$n_M_est / 100, flr_est = result_8_cnonpar$flr_est,
-                           mmr_est = result_8_cnonpar$mmr_est, unlist(result_8_cnonpar$eval_metrics)))
-metrics_8_cnonpar_hurdle &lt;- unlist(c(n_M_est = result_8_cnonpar_hurdle$n_M_est / 100, flr_est = result_8_cnonpar_hurdle$flr_est,
-                              mmr_est = result_8_cnonpar_hurdle$mmr_est, unlist(result_8_cnonpar_hurdle$eval_metrics)))
+<pre class="r"><code>metrics_3_b &lt;- unlist(c(n_M_est = result_3_b$n_M_est / 100, flr_est = result_3_b$flr_est,
+                        mmr_est = result_3_b$mmr_est, unlist(result_3_b$eval_metrics)))
+metrics_soundex_3_b &lt;- unlist(c(n_M_est = result_soundex_3_b$n_M_est / 100, flr_est = result_soundex_3_b$flr_est,
+                        mmr_est = result_soundex_3_b$mmr_est, unlist(result_soundex_3_b$eval_metrics)))
+metrics_3_cpar &lt;- unlist(c(n_M_est = result_3_cpar$n_M_est / 100, flr_est = result_3_cpar$flr_est,
+                        mmr_est = result_3_cpar$mmr_est, unlist(result_3_cpar$eval_metrics)))
+metrics_3_cnonpar &lt;- unlist(c(n_M_est = result_3_cnonpar$n_M_est / 100, flr_est = result_3_cnonpar$flr_est,
+                           mmr_est = result_3_cnonpar$mmr_est, unlist(result_3_cnonpar$eval_metrics)))
+metrics_3_cnonpar_hurdle &lt;- unlist(c(n_M_est = result_3_cnonpar_hurdle$n_M_est / 100, flr_est = result_3_cnonpar_hurdle$flr_est,
+                              mmr_est = result_3_cnonpar_hurdle$mmr_est, unlist(result_3_cnonpar_hurdle$eval_metrics)))
 
-results_8_size &lt;- list(
-  &quot;binary&quot; = metrics_8_b,
-  &quot;binary_soundex&quot; = metrics_soundex_8_b,
-  &quot;cpar&quot; = metrics_8_cpar,
-  &quot;cnonpar&quot; = metrics_8_cnonpar,
-  &quot;cnonpar_hurdle&quot; = metrics_8_cnonpar_hurdle
+results_3_size &lt;- list(
+  &quot;binary&quot; = metrics_3_b,
+  &quot;binary_soundex&quot; = metrics_soundex_3_b,
+  &quot;cpar&quot; = metrics_3_cpar,
+  &quot;cnonpar&quot; = metrics_3_cnonpar,
+  &quot;cnonpar_hurdle&quot; = metrics_3_cnonpar_hurdle
 )
-table_8_size &lt;- data.frame(round(do.call(rbind, results_8_size) * 100, 4))
-kable(table_8_size)</code></pre>
+table_3_size &lt;- data.frame(round(do.call(rbind, results_3_size) * 100, 4))
+kable(table_3_size)</code></pre>
 <table style="width:100%;">
 <colgroup>
 <col width="14%" />
@@ -543,68 +543,68 @@ kable(table_8_size)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">binary</td>
-<td align="right">347.0805</td>
-<td align="right">3.6606</td>
-<td align="right">3.6829</td>
-<td align="right">95.3039</td>
-<td align="right">99.4236</td>
-<td align="right">0.0004</td>
-<td align="right">4.6961</td>
-<td align="right">99.9958</td>
-<td align="right">99.9996</td>
-<td align="right">97.3202</td>
+<td align="right">117.4017</td>
+<td align="right">5.7787</td>
+<td align="right">6.1010</td>
+<td align="right">90.4762</td>
+<td align="right">97.4359</td>
+<td align="right">0.0007</td>
+<td align="right">9.5238</td>
+<td align="right">99.9967</td>
+<td align="right">99.9993</td>
+<td align="right">93.8272</td>
 </tr>
 <tr class="even">
 <td align="left">binary_soundex</td>
-<td align="right">385.0611</td>
-<td align="right">6.9231</td>
-<td align="right">6.9379</td>
-<td align="right">98.8950</td>
-<td align="right">92.9870</td>
-<td align="right">0.0060</td>
-<td align="right">1.1050</td>
-<td align="right">99.9931</td>
-<td align="right">99.9940</td>
-<td align="right">95.8501</td>
+<td align="right">125.2180</td>
+<td align="right">4.5921</td>
+<td align="right">4.7582</td>
+<td align="right">95.2381</td>
+<td align="right">96.0000</td>
+<td align="right">0.0011</td>
+<td align="right">4.7619</td>
+<td align="right">99.9976</td>
+<td align="right">99.9989</td>
+<td align="right">95.6175</td>
 </tr>
 <tr class="odd">
 <td align="left">cpar</td>
-<td align="right">351.2505</td>
-<td align="right">1.1540</td>
-<td align="right">1.2245</td>
-<td align="right">96.6851</td>
-<td align="right">99.7151</td>
-<td align="right">0.0002</td>
-<td align="right">3.3149</td>
-<td align="right">99.9971</td>
-<td align="right">99.9998</td>
-<td align="right">98.1767</td>
+<td align="right">122.2206</td>
+<td align="right">0.7558</td>
+<td align="right">0.9349</td>
+<td align="right">96.8254</td>
+<td align="right">100.0000</td>
+<td align="right">0.0000</td>
+<td align="right">3.1746</td>
+<td align="right">99.9991</td>
+<td align="right">100.0000</td>
+<td align="right">98.3871</td>
 </tr>
 <tr class="even">
 <td align="left">cnonpar</td>
-<td align="right">339.5398</td>
-<td align="right">7.2299</td>
-<td align="right">7.1041</td>
-<td align="right">88.6740</td>
-<td align="right">94.4118</td>
-<td align="right">0.0042</td>
-<td align="right">11.3260</td>
-<td align="right">99.9867</td>
-<td align="right">99.9958</td>
-<td align="right">91.4530</td>
+<td align="right">110.4989</td>
+<td align="right">7.1153</td>
+<td align="right">7.5347</td>
+<td align="right">82.5397</td>
+<td align="right">94.5455</td>
+<td align="right">0.0013</td>
+<td align="right">17.4603</td>
+<td align="right">99.9938</td>
+<td align="right">99.9987</td>
+<td align="right">88.1356</td>
 </tr>
 <tr class="odd">
 <td align="left">cnonpar_hurdle</td>
-<td align="right">349.6932</td>
-<td align="right">2.8821</td>
-<td align="right">2.7969</td>
-<td align="right">95.5801</td>
-<td align="right">98.8571</td>
-<td align="right">0.0009</td>
-<td align="right">4.4199</td>
-<td align="right">99.9956</td>
-<td align="right">99.9991</td>
-<td align="right">97.1910</td>
+<td align="right">120.6749</td>
+<td align="right">2.7525</td>
+<td align="right">2.4905</td>
+<td align="right">95.2381</td>
+<td align="right">99.1736</td>
+<td align="right">0.0002</td>
+<td align="right">4.7619</td>
+<td align="right">99.9985</td>
+<td align="right">99.9998</td>
+<td align="right">97.1660</td>
 </tr>
 </tbody>
 </table>
@@ -612,68 +612,68 @@ kable(table_8_size)</code></pre>
 <div id="set_construction-flr-target_flr-0.03" class="section level3">
 <h3><code>set_construction = &quot;flr&quot;</code>,
 <code>target_flr = 0.03</code></h3>
-<p><code>result_8_b_flr_03</code> and
-<code>result_soundex_8_b_flr_03</code> were obtained using the existing
-method. <code>result_8_cpar_flr_03</code>,
-<code>result_8_cnonpar_flr_03</code> and
-<code>result_8_cnonpar_hurdle_flr_03</code> were obtained using the
+<p><code>result_3_b_flr_03</code> and
+<code>result_soundex_3_b_flr_03</code> were obtained using the existing
+method. <code>result_3_cpar_flr_03</code>,
+<code>result_3_cnonpar_flr_03</code> and
+<code>result_3_cnonpar_hurdle_flr_03</code> were obtained using the
 proposed method.</p>
-<pre class="r"><code>set.seed(1)
-result_8_b_flr_03 &lt;- mec(prd_sample_8, cis_sample_8,
+<pre class="r"><code>set.seed(1111)
+result_3_b_flr_03 &lt;- mec(prd_sample_3, cis_sample_3,
                          variables = variables,
-                         true_matches = matches_8,
+                         true_matches = matches_3,
                          set_construction = &quot;flr&quot;)
-result_soundex_8_b_flr_03 &lt;- mec(prd_soundex_sample_8, cis_soundex_sample_8,
+result_soundex_3_b_flr_03 &lt;- mec(prd_soundex_sample_3, cis_soundex_sample_3,
                                  variables = variables_soundex,
-                                 true_matches = matches_8,
+                                 true_matches = matches_3,
                                  set_construction = &quot;flr&quot;)
-result_8_cpar_flr_03 &lt;- mec(prd_sample_8, cis_sample_8,
+result_3_cpar_flr_03 &lt;- mec(prd_sample_3, cis_sample_3,
                             variables = variables,
-                            true_matches = matches_8,
+                            true_matches = matches_3,
                             comparators = comparators,
                             methods = methods_cpar,
                             set_construction = &quot;flr&quot;)
-result_8_cnonpar_flr_03 &lt;- mec(prd_sample_8, cis_sample_8,
+result_3_cnonpar_flr_03 &lt;- mec(prd_sample_3, cis_sample_3,
                                variables = variables,
-                               true_matches = matches_8,
+                               true_matches = matches_3,
                                comparators = comparators,
                                methods = methods_cnonpar,
                                set_construction = &quot;flr&quot;)
-result_8_cnonpar_hurdle_flr_03 &lt;- mec(prd_sample_8, cis_sample_8,
+result_3_cnonpar_hurdle_flr_03 &lt;- mec(prd_sample_3, cis_sample_3,
                                       variables = variables,
-                                      true_matches = matches_8,
+                                      true_matches = matches_3,
                                       comparators = comparators,
                                       methods = methods_cnonpar,
                                       nonpar_hurdle = TRUE,
                                       set_construction = &quot;flr&quot;)
 
-# result_8_b_flr_03
-# result_soundex_8_b_flr_03
-# result_8_cpar_flr_03
-# result_8_cnonpar_flr_03
-# result_8_cnonpar_hurdle_flr_03</code></pre>
+# result_3_b_flr_03
+# result_soundex_3_b_flr_03
+# result_3_cpar_flr_03
+# result_3_cnonpar_flr_03
+# result_3_cnonpar_hurdle_flr_03</code></pre>
 <p>Comparison.</p>
-<pre class="r"><code>metrics_8_b_flr_03 &lt;- unlist(c(n_M_est = result_8_b_flr_03$n_M_est / 100, flr_est = result_8_b_flr_03$flr_est,
-                        mmr_est = result_8_b_flr_03$mmr_est, unlist(result_8_b_flr_03$eval_metrics)))
-metrics_soundex_8_b_flr_03 &lt;- unlist(c(n_M_est = result_soundex_8_b_flr_03$n_M_est / 100, flr_est = result_soundex_8_b_flr_03$flr_est,
-                                mmr_est = result_soundex_8_b_flr_03$mmr_est, unlist(result_soundex_8_b_flr_03$eval_metrics)))
-metrics_8_cpar_flr_03 &lt;- unlist(c(n_M_est = result_8_cpar_flr_03$n_M_est / 100, flr_est = result_8_cpar_flr_03$flr_est,
-                           mmr_est = result_8_cpar_flr_03$mmr_est, unlist(result_8_cpar_flr_03$eval_metrics)))
-metrics_8_cnonpar_flr_03 &lt;- unlist(c(n_M_est = result_8_cnonpar_flr_03$n_M_est / 100, flr_est = result_8_cnonpar_flr_03$flr_est,
-                              mmr_est = result_8_cnonpar_flr_03$mmr_est, unlist(result_8_cnonpar_flr_03$eval_metrics)))
-metrics_8_cnonpar_hurdle_flr_03 &lt;- unlist(c(n_M_est = result_8_cnonpar_hurdle_flr_03$n_M_est / 100, flr_est = result_8_cnonpar_hurdle_flr_03$flr_est,
-                                     mmr_est = result_8_cnonpar_hurdle_flr_03$mmr_est, unlist(result_8_cnonpar_hurdle_flr_03$eval_metrics)))
+<pre class="r"><code>metrics_3_b_flr_03 &lt;- unlist(c(n_M_est = result_3_b_flr_03$n_M_est / 100, flr_est = result_3_b_flr_03$flr_est,
+                        mmr_est = result_3_b_flr_03$mmr_est, unlist(result_3_b_flr_03$eval_metrics)))
+metrics_soundex_3_b_flr_03 &lt;- unlist(c(n_M_est = result_soundex_3_b_flr_03$n_M_est / 100, flr_est = result_soundex_3_b_flr_03$flr_est,
+                                mmr_est = result_soundex_3_b_flr_03$mmr_est, unlist(result_soundex_3_b_flr_03$eval_metrics)))
+metrics_3_cpar_flr_03 &lt;- unlist(c(n_M_est = result_3_cpar_flr_03$n_M_est / 100, flr_est = result_3_cpar_flr_03$flr_est,
+                           mmr_est = result_3_cpar_flr_03$mmr_est, unlist(result_3_cpar_flr_03$eval_metrics)))
+metrics_3_cnonpar_flr_03 &lt;- unlist(c(n_M_est = result_3_cnonpar_flr_03$n_M_est / 100, flr_est = result_3_cnonpar_flr_03$flr_est,
+                              mmr_est = result_3_cnonpar_flr_03$mmr_est, unlist(result_3_cnonpar_flr_03$eval_metrics)))
+metrics_3_cnonpar_hurdle_flr_03 &lt;- unlist(c(n_M_est = result_3_cnonpar_hurdle_flr_03$n_M_est / 100, flr_est = result_3_cnonpar_hurdle_flr_03$flr_est,
+                                     mmr_est = result_3_cnonpar_hurdle_flr_03$mmr_est, unlist(result_3_cnonpar_hurdle_flr_03$eval_metrics)))
 
-results_8_flr_03 &lt;- list(
-  &quot;binary&quot; = metrics_8_b_flr_03,
-  &quot;binary_soundex&quot; = metrics_soundex_8_b_flr_03,
-  &quot;cpar&quot; = metrics_8_cpar_flr_03,
-  &quot;cnonpar&quot; = metrics_8_cnonpar_flr_03,
-  &quot;cnonpar_hurdle&quot; = metrics_8_cnonpar_hurdle_flr_03
+results_3_flr_03 &lt;- list(
+  &quot;binary&quot; = metrics_3_b_flr_03,
+  &quot;binary_soundex&quot; = metrics_soundex_3_b_flr_03,
+  &quot;cpar&quot; = metrics_3_cpar_flr_03,
+  &quot;cnonpar&quot; = metrics_3_cnonpar_flr_03,
+  &quot;cnonpar_hurdle&quot; = metrics_3_cnonpar_hurdle_flr_03
 )
-table_8_flr_03 &lt;- data.frame(round(do.call(rbind, results_8_flr_03) * 100, 4))
-kable(table_8_flr_03)</code></pre>
-<table style="width:100%;">
+table_3_flr_03 &lt;- data.frame(round(do.call(rbind, results_3_flr_03) * 100, 4))
+kable(table_3_flr_03)</code></pre>
+<table>
 <colgroup>
 <col width="14%" />
 <col width="8%" />
@@ -682,7 +682,7 @@ kable(table_8_flr_03)</code></pre>
 <col width="7%" />
 <col width="9%" />
 <col width="6%" />
-<col width="7%" />
+<col width="8%" />
 <col width="8%" />
 <col width="11%" />
 <col width="8%" />
@@ -705,68 +705,68 @@ kable(table_8_flr_03)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">binary</td>
-<td align="right">347.0805</td>
-<td align="right">3.2694</td>
-<td align="right">3.0132</td>
-<td align="right">94.4751</td>
-<td align="right">98.2759</td>
+<td align="right">117.4017</td>
+<td align="right">9.5380</td>
+<td align="right">2.1421</td>
+<td align="right">96.0317</td>
+<td align="right">95.2756</td>
 <td align="right">0.0013</td>
-<td align="right">5.5249</td>
-<td align="right">99.9942</td>
+<td align="right">3.9683</td>
+<td align="right">99.9976</td>
 <td align="right">99.9987</td>
-<td align="right">96.3380</td>
+<td align="right">95.6522</td>
 </tr>
 <tr class="even">
 <td align="left">binary_soundex</td>
-<td align="right">385.0611</td>
-<td align="right">2.6523</td>
-<td align="right">2.9206</td>
-<td align="right">98.0663</td>
-<td align="right">92.4479</td>
-<td align="right">0.0064</td>
-<td align="right">1.9337</td>
-<td align="right">99.9920</td>
-<td align="right">99.9936</td>
-<td align="right">95.1743</td>
+<td align="right">125.2180</td>
+<td align="right">3.1702</td>
+<td align="right">3.3388</td>
+<td align="right">93.6508</td>
+<td align="right">94.4000</td>
+<td align="right">0.0015</td>
+<td align="right">6.3492</td>
+<td align="right">99.9967</td>
+<td align="right">99.9985</td>
+<td align="right">94.0239</td>
 </tr>
 <tr class="odd">
 <td align="left">cpar</td>
-<td align="right">351.2505</td>
-<td align="right">2.8381</td>
-<td align="right">0.1412</td>
-<td align="right">96.9613</td>
-<td align="right">97.2299</td>
-<td align="right">0.0022</td>
-<td align="right">3.0387</td>
-<td align="right">99.9953</td>
-<td align="right">99.9978</td>
-<td align="right">97.0954</td>
+<td align="right">122.2206</td>
+<td align="right">3.1821</td>
+<td align="right">0.1882</td>
+<td align="right">97.6190</td>
+<td align="right">97.6190</td>
+<td align="right">0.0007</td>
+<td align="right">2.3810</td>
+<td align="right">99.9987</td>
+<td align="right">99.9993</td>
+<td align="right">97.6190</td>
 </tr>
 <tr class="even">
 <td align="left">cnonpar</td>
-<td align="right">339.5398</td>
-<td align="right">2.5162</td>
-<td align="right">9.5618</td>
-<td align="right">85.3591</td>
-<td align="right">98.0952</td>
-<td align="right">0.0013</td>
-<td align="right">14.6409</td>
-<td align="right">99.9869</td>
-<td align="right">99.9987</td>
-<td align="right">91.2851</td>
+<td align="right">110.4989</td>
+<td align="right">5.7157</td>
+<td align="right">99.1467</td>
+<td align="right">0.0000</td>
+<td align="right">0.0000</td>
+<td align="right">0.0002</td>
+<td align="right">100.0000</td>
+<td align="right">99.9721</td>
+<td align="right">99.9998</td>
+<td align="right">0.0000</td>
 </tr>
 <tr class="odd">
 <td align="left">cnonpar_hurdle</td>
-<td align="right">349.6932</td>
-<td align="right">2.9000</td>
-<td align="right">1.9818</td>
-<td align="right">95.3039</td>
-<td align="right">97.7337</td>
-<td align="right">0.0018</td>
-<td align="right">4.6961</td>
-<td align="right">99.9944</td>
-<td align="right">99.9982</td>
-<td align="right">96.5035</td>
+<td align="right">120.6749</td>
+<td align="right">3.2296</td>
+<td align="right">2.1670</td>
+<td align="right">96.0317</td>
+<td align="right">99.1803</td>
+<td align="right">0.0002</td>
+<td align="right">3.9683</td>
+<td align="right">99.9987</td>
+<td align="right">99.9998</td>
+<td align="right">97.5806</td>
 </tr>
 </tbody>
 </table>
@@ -774,40 +774,40 @@ kable(table_8_flr_03)</code></pre>
 <div id="set_construction-flr-target_flr-0.05" class="section level3">
 <h3><code>set_construction = &quot;flr&quot;</code>,
 <code>target_flr = 0.05</code></h3>
-<p><code>result_8_b_flr_05</code> and
-<code>result_soundex_8_b_flr_05</code> were obtained using the existing
-method. <code>result_8_cpar_flr_05</code>,
-<code>result_8_cnonpar_flr_05</code> and
-<code>result_8_cnonpar_hurdle_flr_05</code> were obtained using the
+<p><code>result_3_b_flr_05</code> and
+<code>result_soundex_3_b_flr_05</code> were obtained using the existing
+method. <code>result_3_cpar_flr_05</code>,
+<code>result_3_cnonpar_flr_05</code> and
+<code>result_3_cnonpar_hurdle_flr_05</code> were obtained using the
 proposed method.</p>
-<pre class="r"><code>set.seed(1)
-result_8_b_flr_05 &lt;- mec(prd_sample_8, cis_sample_8,
+<pre class="r"><code>set.seed(1111)
+result_3_b_flr_05 &lt;- mec(prd_sample_3, cis_sample_3,
                          variables = variables,
-                         true_matches = matches_8,
+                         true_matches = matches_3,
                          set_construction = &quot;flr&quot;,
                          target_flr = 0.05)
-result_soundex_8_b_flr_05 &lt;- mec(prd_soundex_sample_8, cis_soundex_sample_8,
+result_soundex_3_b_flr_05 &lt;- mec(prd_soundex_sample_3, cis_soundex_sample_3,
                                  variables = variables_soundex,
-                                 true_matches = matches_8,
+                                 true_matches = matches_3,
                                  set_construction = &quot;flr&quot;,
                                  target_flr = 0.05)
-result_8_cpar_flr_05 &lt;- mec(prd_sample_8, cis_sample_8,
+result_3_cpar_flr_05 &lt;- mec(prd_sample_3, cis_sample_3,
                             variables = variables,
-                            true_matches = matches_8,
+                            true_matches = matches_3,
                             comparators = comparators,
                             methods = methods_cpar,
                             set_construction = &quot;flr&quot;,
                             target_flr = 0.05)
-result_8_cnonpar_flr_05 &lt;- mec(prd_sample_8, cis_sample_8,
+result_3_cnonpar_flr_05 &lt;- mec(prd_sample_3, cis_sample_3,
                                variables = variables,
-                               true_matches = matches_8,
+                               true_matches = matches_3,
                                comparators = comparators,
                                methods = methods_cnonpar,
                                set_construction = &quot;flr&quot;,
                                target_flr = 0.05)
-result_8_cnonpar_hurdle_flr_05 &lt;- mec(prd_sample_8, cis_sample_8,
+result_3_cnonpar_hurdle_flr_05 &lt;- mec(prd_sample_3, cis_sample_3,
                                       variables = variables,
-                                      true_matches = matches_8,
+                                      true_matches = matches_3,
                                       comparators = comparators,
                                       methods = methods_cnonpar,
                                       nonpar_hurdle = TRUE,
@@ -815,33 +815,33 @@ result_8_cnonpar_hurdle_flr_05 &lt;- mec(prd_sample_8, cis_sample_8,
                                       target_flr = 0.05)
 
 
-# result_8_b_flr_05
-# result_soundex_8_b_flr_05
-# result_8_cpar_flr_05
-# result_8_cnonpar_flr_05
-# result_8_cnonpar_hurdle_flr_05</code></pre>
+# result_3_b_flr_05
+# result_soundex_3_b_flr_05
+# result_3_cpar_flr_05
+# result_3_cnonpar_flr_05
+# result_3_cnonpar_hurdle_flr_05</code></pre>
 <p>Comparison.</p>
-<pre class="r"><code>metrics_8_b_flr_05 &lt;- unlist(c(n_M_est = result_8_b_flr_05$n_M_est / 100, flr_est = result_8_b_flr_05$flr_est,
-                               mmr_est = result_8_b_flr_05$mmr_est, unlist(result_8_b_flr_05$eval_metrics)))
-metrics_soundex_8_b_flr_05 &lt;- unlist(c(n_M_est = result_soundex_8_b_flr_05$n_M_est / 100, flr_est = result_soundex_8_b_flr_05$flr_est,
-                                       mmr_est = result_soundex_8_b_flr_05$mmr_est, unlist(result_soundex_8_b_flr_05$eval_metrics)))
-metrics_8_cpar_flr_05 &lt;- unlist(c(n_M_est = result_8_cpar_flr_05$n_M_est / 100, flr_est = result_8_cpar_flr_05$flr_est,
-                                  mmr_est = result_8_cpar_flr_05$mmr_est, unlist(result_8_cpar_flr_05$eval_metrics)))
-metrics_8_cnonpar_flr_05 &lt;- unlist(c(n_M_est = result_8_cnonpar_flr_05$n_M_est / 100, flr_est = result_8_cnonpar_flr_05$flr_est,
-                                     mmr_est = result_8_cnonpar_flr_05$mmr_est, unlist(result_8_cnonpar_flr_05$eval_metrics)))
-metrics_8_cnonpar_hurdle_flr_05 &lt;- unlist(c(n_M_est = result_8_cnonpar_hurdle_flr_05$n_M_est / 100, flr_est = result_8_cnonpar_hurdle_flr_05$flr_est,
-                                            mmr_est = result_8_cnonpar_hurdle_flr_05$mmr_est, unlist(result_8_cnonpar_hurdle_flr_05$eval_metrics)))
+<pre class="r"><code>metrics_3_b_flr_05 &lt;- unlist(c(n_M_est = result_3_b_flr_05$n_M_est / 100, flr_est = result_3_b_flr_05$flr_est,
+                               mmr_est = result_3_b_flr_05$mmr_est, unlist(result_3_b_flr_05$eval_metrics)))
+metrics_soundex_3_b_flr_05 &lt;- unlist(c(n_M_est = result_soundex_3_b_flr_05$n_M_est / 100, flr_est = result_soundex_3_b_flr_05$flr_est,
+                                       mmr_est = result_soundex_3_b_flr_05$mmr_est, unlist(result_soundex_3_b_flr_05$eval_metrics)))
+metrics_3_cpar_flr_05 &lt;- unlist(c(n_M_est = result_3_cpar_flr_05$n_M_est / 100, flr_est = result_3_cpar_flr_05$flr_est,
+                                  mmr_est = result_3_cpar_flr_05$mmr_est, unlist(result_3_cpar_flr_05$eval_metrics)))
+metrics_3_cnonpar_flr_05 &lt;- unlist(c(n_M_est = result_3_cnonpar_flr_05$n_M_est / 100, flr_est = result_3_cnonpar_flr_05$flr_est,
+                                     mmr_est = result_3_cnonpar_flr_05$mmr_est, unlist(result_3_cnonpar_flr_05$eval_metrics)))
+metrics_3_cnonpar_hurdle_flr_05 &lt;- unlist(c(n_M_est = result_3_cnonpar_hurdle_flr_05$n_M_est / 100, flr_est = result_3_cnonpar_hurdle_flr_05$flr_est,
+                                            mmr_est = result_3_cnonpar_hurdle_flr_05$mmr_est, unlist(result_3_cnonpar_hurdle_flr_05$eval_metrics)))
 
-results_8_flr_05 &lt;- list(
-  &quot;binary&quot; = metrics_8_b_flr_05,
-  &quot;binary_soundex&quot; = metrics_soundex_8_b_flr_05,
-  &quot;cpar&quot; = metrics_8_cpar_flr_05,
-  &quot;cnonpar&quot; = metrics_8_cnonpar_flr_05,
-  &quot;cnonpar_hurdle&quot; = metrics_8_cnonpar_hurdle_flr_05
+results_3_flr_05 &lt;- list(
+  &quot;binary&quot; = metrics_3_b_flr_05,
+  &quot;binary_soundex&quot; = metrics_soundex_3_b_flr_05,
+  &quot;cpar&quot; = metrics_3_cpar_flr_05,
+  &quot;cnonpar&quot; = metrics_3_cnonpar_flr_05,
+  &quot;cnonpar_hurdle&quot; = metrics_3_cnonpar_hurdle_flr_05
 )
-table_8_flr_05 &lt;- data.frame(round(do.call(rbind, results_8_flr_05) * 100, 4))
-kable(table_8_flr_05)</code></pre>
-<table style="width:100%;">
+table_3_flr_05 &lt;- data.frame(round(do.call(rbind, results_3_flr_05) * 100, 4))
+kable(table_3_flr_05)</code></pre>
+<table>
 <colgroup>
 <col width="14%" />
 <col width="8%" />
@@ -850,7 +850,7 @@ kable(table_8_flr_05)</code></pre>
 <col width="7%" />
 <col width="9%" />
 <col width="6%" />
-<col width="7%" />
+<col width="8%" />
 <col width="8%" />
 <col width="11%" />
 <col width="8%" />
@@ -873,90 +873,90 @@ kable(table_8_flr_05)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">binary</td>
-<td align="right">347.0805</td>
-<td align="right">6.0062</td>
-<td align="right">1.6950</td>
-<td align="right">96.4088</td>
-<td align="right">96.1433</td>
-<td align="right">0.0031</td>
-<td align="right">3.5912</td>
-<td align="right">99.9940</td>
-<td align="right">99.9969</td>
-<td align="right">96.2759</td>
+<td align="right">117.4017</td>
+<td align="right">9.5380</td>
+<td align="right">2.1421</td>
+<td align="right">96.0317</td>
+<td align="right">95.2756</td>
+<td align="right">0.0013</td>
+<td align="right">3.9683</td>
+<td align="right">99.9976</td>
+<td align="right">99.9987</td>
+<td align="right">95.6522</td>
 </tr>
 <tr class="even">
 <td align="left">binary_soundex</td>
-<td align="right">385.0611</td>
-<td align="right">4.9778</td>
-<td align="right">2.2784</td>
-<td align="right">98.3425</td>
-<td align="right">89.8990</td>
-<td align="right">0.0089</td>
-<td align="right">1.6575</td>
-<td align="right">99.9898</td>
-<td align="right">99.9911</td>
-<td align="right">93.9314</td>
+<td align="right">125.2180</td>
+<td align="right">5.1360</td>
+<td align="right">2.2708</td>
+<td align="right">93.6508</td>
+<td align="right">91.4729</td>
+<td align="right">0.0024</td>
+<td align="right">6.3492</td>
+<td align="right">99.9958</td>
+<td align="right">99.9976</td>
+<td align="right">92.5490</td>
 </tr>
 <tr class="odd">
 <td align="left">cpar</td>
-<td align="right">351.2505</td>
-<td align="right">5.1321</td>
-<td align="right">0.0681</td>
-<td align="right">96.9613</td>
-<td align="right">94.8649</td>
-<td align="right">0.0042</td>
-<td align="right">3.0387</td>
-<td align="right">99.9933</td>
-<td align="right">99.9958</td>
-<td align="right">95.9016</td>
+<td align="right">122.2206</td>
+<td align="right">4.5909</td>
+<td align="right">0.0793</td>
+<td align="right">98.4127</td>
+<td align="right">96.8750</td>
+<td align="right">0.0009</td>
+<td align="right">1.5873</td>
+<td align="right">99.9987</td>
+<td align="right">99.9991</td>
+<td align="right">97.6378</td>
 </tr>
 <tr class="even">
 <td align="left">cnonpar</td>
-<td align="right">339.5398</td>
-<td align="right">5.1759</td>
-<td align="right">4.2095</td>
-<td align="right">88.9503</td>
-<td align="right">93.8776</td>
-<td align="right">0.0047</td>
-<td align="right">11.0497</td>
-<td align="right">99.9865</td>
-<td align="right">99.9953</td>
-<td align="right">91.3475</td>
+<td align="right">110.4989</td>
+<td align="right">5.7157</td>
+<td align="right">99.1467</td>
+<td align="right">0.0000</td>
+<td align="right">0.0000</td>
+<td align="right">0.0002</td>
+<td align="right">100.0000</td>
+<td align="right">99.9721</td>
+<td align="right">99.9998</td>
+<td align="right">0.0000</td>
 </tr>
 <tr class="odd">
 <td align="left">cnonpar_hurdle</td>
-<td align="right">349.6932</td>
-<td align="right">5.3276</td>
-<td align="right">1.1836</td>
-<td align="right">95.8564</td>
-<td align="right">95.0685</td>
-<td align="right">0.0040</td>
-<td align="right">4.1436</td>
-<td align="right">99.9927</td>
-<td align="right">99.9960</td>
-<td align="right">95.4608</td>
+<td align="right">120.6749</td>
+<td align="right">4.8641</td>
+<td align="right">1.4543</td>
+<td align="right">97.6190</td>
+<td align="right">98.4000</td>
+<td align="right">0.0004</td>
+<td align="right">2.3810</td>
+<td align="right">99.9989</td>
+<td align="right">99.9996</td>
+<td align="right">98.0080</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="fellegi-sunter-model" class="section level3">
 <h3>Fellegi-Sunter model</h3>
-<pre class="r"><code>set.seed(1)
-pairs_8 &lt;- pair(prd_soundex_sample_8, cis_soundex_sample_8)
-compare_pairs(pairs_8, on = variables_soundex, inplace = TRUE)
-model &lt;- problink_em(~ P11 + P12 + P13 + P14 + P21 + P22 + P23 + P24 + SEX + DOB_DAY + DOB_MON + DOB_YEAR, data = pairs_8)
-pairs_8 &lt;- predict(model, pairs_8, type = &quot;mpost&quot;, add = TRUE, binary = TRUE)
-pairs_8 &lt;- select_n_to_m(pairs_8, &quot;ntom&quot;, &quot;mpost&quot;, 0.95)
-setDT(pairs_8)
-pairs_8 &lt;- pairs_8[ntom == TRUE, ]
-pairs_8 &lt;- pairs_8[, c(&quot;.x&quot;, &quot;.y&quot;)]
-setnames(pairs_8, c(&quot;.x&quot;, &quot;.y&quot;), c(&quot;a&quot;, &quot;b&quot;))
+<pre class="r"><code>set.seed(1111)
+pairs_3 &lt;- pair(prd_soundex_sample_3, cis_soundex_sample_3)
+compare_pairs(pairs_3, on = variables_soundex, inplace = TRUE)
+model &lt;- problink_em(~ P11 + P12 + P13 + P14 + P21 + P22 + P23 + P24 + SEX + DOB_DAY + DOB_MON + DOB_YEAR, data = pairs_3)
+pairs_3 &lt;- predict(model, pairs_3, type = &quot;mpost&quot;, add = TRUE, binary = TRUE)
+pairs_3 &lt;- select_n_to_m(pairs_3, &quot;ntom&quot;, &quot;mpost&quot;, 0.95)
+setDT(pairs_3)
+pairs_3 &lt;- pairs_3[ntom == TRUE, ]
+pairs_3 &lt;- pairs_3[, c(&quot;.x&quot;, &quot;.y&quot;)]
+setnames(pairs_3, c(&quot;.x&quot;, &quot;.y&quot;), c(&quot;a&quot;, &quot;b&quot;))
 
-f_s_8_eval &lt;- evaluation(pairs_8, matches_8, n = NROW(prd_soundex_sample_8) * NROW(cis_soundex_sample_8))
-f_s_8_metrics &lt;- get_metrics(f_s_8_eval[[1]], f_s_8_eval[[2]], f_s_8_eval[[3]], f_s_8_eval[[4]])
-table_fs_8 &lt;- data.frame(rbind(round(c(n_M_est = NROW(pairs_8), (unlist(f_s_8_metrics) * 100)), 2)))
-rownames(table_fs_8) &lt;- &quot;fellegi_sunter&quot;
-kable(table_fs_8)</code></pre>
+f_s_3_eval &lt;- evaluation(pairs_3, matches_3, n = NROW(prd_soundex_sample_3) * NROW(cis_soundex_sample_3))
+f_s_3_metrics &lt;- get_metrics(f_s_3_eval[[1]], f_s_3_eval[[2]], f_s_3_eval[[3]], f_s_3_eval[[4]])
+table_fs_3 &lt;- data.frame(rbind(round(c(n_M_est = NROW(pairs_3), (unlist(f_s_3_metrics) * 100)), 2)))
+rownames(table_fs_3) &lt;- &quot;fellegi_sunter&quot;
+kable(table_fs_3)</code></pre>
 <table>
 <colgroup>
 <col width="18%" />
@@ -985,14 +985,14 @@ kable(table_fs_8)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">fellegi_sunter</td>
-<td align="right">355</td>
-<td align="right">79.56</td>
-<td align="right">81.13</td>
-<td align="right">0.01</td>
-<td align="right">20.44</td>
-<td align="right">99.97</td>
-<td align="right">99.99</td>
-<td align="right">80.33</td>
+<td align="right">406</td>
+<td align="right">79.37</td>
+<td align="right">24.63</td>
+<td align="right">0.07</td>
+<td align="right">20.63</td>
+<td align="right">99.93</td>
+<td align="right">99.93</td>
+<td align="right">37.59</td>
 </tr>
 </tbody>
 </table>
