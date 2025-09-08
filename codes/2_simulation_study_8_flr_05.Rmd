@@ -1,0 +1,199 @@
+---
+title: "Simulation study, Scenario-II, p_A = 0.8"
+output: html_document
+---
+
+Loading necessary packages.
+
+```{r}
+library(automatedRecLin)
+library(data.table)
+library(readr)
+library(phonics)
+library(tidyr)
+library(knitr)
+library(reclin2)
+```
+
+Reading and cleaning data. Creating Soundex columns.
+
+```{r}
+census <- read_csv("../data-raw/census.csv", show_col_types = FALSE)
+cis <- read_csv("../data-raw/cis.csv", show_col_types = FALSE)
+prd <- read_csv("../data-raw/prd.csv", show_col_types = FALSE)
+
+census <- as.data.frame(lapply(census, as.character))
+census[is.na(census)] <- ""
+cis <- as.data.frame(lapply(cis, as.character))
+cis[is.na(cis)] <- ""
+prd <- as.data.frame(lapply(prd, as.character))
+prd[is.na(prd)] <- ""
+
+setDT(census)
+setDT(cis)
+setDT(prd)
+
+census[, PERNAME1 := gsub("-", "", PERNAME1)]
+cis[, PERNAME1 := gsub("-", "", PERNAME1)]
+prd[, PERNAME1 := gsub("-", "", PERNAME1)]
+
+census_soundex <- copy(census)
+cis_soundex <- copy(cis)
+prd_soundex <- copy(prd)
+set(census_soundex, j = "PERNAME1", value = soundex(census_soundex[["PERNAME1"]]))
+set(census_soundex, j = "PERNAME2", value = soundex(census_soundex[["PERNAME2"]]))
+census_soundex <- separate(census_soundex, PERNAME1,
+                           into = c("P11", "P12", "P13", "P14"), sep = 1:3)
+census_soundex <- separate(census_soundex, PERNAME2,
+                           into = c("P21", "P22", "P23", "P24"), sep = 1:3)
+set(cis_soundex, j = "PERNAME1", value = soundex(cis_soundex[["PERNAME1"]]))
+set(cis_soundex, j = "PERNAME2", value = soundex(cis_soundex[["PERNAME2"]]))
+cis_soundex <- separate(cis_soundex, PERNAME1,
+                        into = c("P11", "P12", "P13", "P14"), sep = 1:3)
+cis_soundex <- separate(cis_soundex, PERNAME2,
+                        into = c("P21", "P22", "P23", "P24"), sep = 1:3)
+set(prd_soundex, j = "PERNAME1", value = soundex(prd_soundex[["PERNAME1"]]))
+set(prd_soundex, j = "PERNAME2", value = soundex(prd_soundex[["PERNAME2"]]))
+prd_soundex <- separate(prd_soundex, PERNAME1,
+                        into = c("P11", "P12", "P13", "P14"), sep = 1:3)
+prd_soundex <- separate(prd_soundex, PERNAME2,
+                        into = c("P21", "P22", "P23", "P24"), sep = 1:3)
+
+setDT(census_soundex)
+setDT(cis_soundex)
+setDT(prd_soundex)
+```
+
+Setting the parameters.
+
+```{r}
+n_A <- 500
+n_B <- 1000
+ids <- Reduce(intersect, list(census$PERSON_ID, prd$PERSON_ID, cis$PERSON_ID))
+variables <- c("PERNAME1", "PERNAME2", "SEX",
+               "DOB_DAY", "DOB_MON", "DOB_YEAR")
+variables_soundex <- c("P11", "P12", "P13", "P14",
+                       "P21", "P22", "P23", "P24", "SEX",
+                       "DOB_DAY", "DOB_MON", "DOB_YEAR")
+comparators <- list(
+  "PERNAME1" = jarowinkler_complement(),
+  "PERNAME2" = jarowinkler_complement()
+)
+methods_cpar <- list(
+  "PERNAME1" = "continuous_parametric",
+  "PERNAME2" = "continuous_parametric"
+)
+methods_cnonpar <- list(
+  "PERNAME1" = "continuous_nonparametric",
+  "PERNAME2" = "continuous_nonparametric"
+)
+```
+
+Sampling.
+
+```{r}
+set.seed(1)
+p_A_8 <- 0.8
+ids_prd_8 <- sample(ids, n_A)
+matched_individ_8 <- sample(ids_prd_8, n_A * p_A_8)
+cis_filtered <- cis[SEX != "" & DOB_YEAR != "" & DOB_MON != ""]
+cis_filtered <- cis[SEX == "F" & as.numeric(DOB_YEAR) <= 1970 & (as.numeric(DOB_MON) %% 2) == 0]
+ids_cis_8 <- sample(setdiff(cis_filtered$PERSON_ID, ids_prd_8), n_B - n_A * p_A_8)
+ids_cis_8 <- c(matched_individ_8, ids_cis_8)
+
+prd_sample_8 <- prd[PERSON_ID %in% ids_prd_8, ]
+cis_sample_8 <- cis[PERSON_ID %in% ids_cis_8, ]
+prd_soundex_sample_8 <- prd_soundex[PERSON_ID %in% ids_prd_8, ]
+cis_soundex_sample_8 <- cis_soundex[PERSON_ID %in% ids_cis_8, ]
+
+matches_8 <- merge(x = prd_sample_8[, .(x=1:.N, PERSON_ID)],
+                   y = cis_sample_8[, .(y = 1:.N, PERSON_ID)],
+                   by = "PERSON_ID")
+setnames(matches_8, c("x", "y"), c("a", "b"))
+set(matches_8, j = "PERSON_ID", value = NULL)
+```
+
++ `r NROW(prd_sample_8)` rows in `prd_sample_8` and `prd_soundex_sample_8` datasets.
++ `r NROW(cis_sample_8)` rows in `cis_sample_8` and `cis_soundex_sample_8` datasets.
++ `r NROW(matches_8)` matches.
+
+### `set_construction = "size"`, `target_flr = 0.05`
+
+```{r}
+result_8_b_list <- list()
+result_8_cpar_list <- list()
+result_8_cnonpar_list <- list()
+
+for (seed in 1:10) {
+  
+  set.seed(seed)
+
+  result_8_b <- mec(prd_soundex_sample_8, cis_soundex_sample_8,
+                    variables = variables_soundex,
+                    true_matches = matches_8,
+                    set_construction = "flr",
+                    target_flr = 0.05)
+  result_8_cpar <- mec(prd_sample_8, cis_sample_8,
+                       variables = variables,
+                       true_matches = matches_8,
+                       comparators = comparators,
+                       methods = methods_cpar,
+                       set_construction = "flr",
+                       target_flr = 0.05)
+  result_8_cnonpar <- mec(prd_sample_8, cis_sample_8,
+                          variables = variables,
+                          true_matches = matches_8,
+                          comparators = comparators,
+                          methods = methods_cnonpar,
+                          nonpar_hurdle = TRUE,
+                          set_construction = "flr",
+                          target_flr = 0.05)
+  
+  result_8_b_list[[seed]] <- result_8_b
+  result_8_cpar_list[[seed]] <- result_8_cpar
+  result_8_cnonpar_list[[seed]] <- result_8_cnonpar
+}
+```
+
+Comparison.
+
+```{r}
+metrics_8_b_list <- lapply(result_8_b_list, function(x) {
+  flr <- 1 -  (x$eval_metrics)["precision"]
+  names(flr) <- NULL
+  mmr <- (x$eval_metrics)["fnr"]
+  names(mmr) <- NULL
+  c(n_M_est = x$n_M_est / 100, flr_est = x$flr_est,
+    mmr_est = x$mmr_est, flr = flr, mmr = mmr,
+    M_size = NROW(x$M_est) / 100)
+})
+metrics_8_b <- colMeans(do.call(rbind, metrics_8_b_list))
+metrics_8_cpar_list <- lapply(result_8_cpar_list, function(x) {
+  flr <- 1 -  (x$eval_metrics)["precision"]
+  names(flr) <- NULL
+  mmr <- (x$eval_metrics)["fnr"]
+  names(mmr) <- NULL
+  c(n_M_est = x$n_M_est / 100, flr_est = x$flr_est,
+    mmr_est = x$mmr_est, flr = flr, mmr = mmr,
+    M_size = NROW(x$M_est) / 100)
+})
+metrics_8_cpar <- colMeans(do.call(rbind, metrics_8_cpar_list))
+metrics_8_cnonpar_list <- lapply(result_8_cnonpar_list, function(x) {
+  flr <- 1 -  (x$eval_metrics)["precision"]
+  names(flr) <- NULL
+  mmr <- (x$eval_metrics)["fnr"]
+  names(mmr) <- NULL
+  c(n_M_est = x$n_M_est / 100, flr_est = x$flr_est,
+    mmr_est = x$mmr_est, flr = flr, mmr = mmr,
+    M_size = NROW(x$M_est) / 100)
+})
+metrics_8_cnonpar <- colMeans(do.call(rbind, metrics_8_cnonpar_list))
+
+results_8_size <- list(
+  "binary" = metrics_8_b,
+  "cpar" = metrics_8_cpar,
+  "cnonpar" = metrics_8_cnonpar
+)
+table_8_size <- data.frame(round(do.call(rbind, results_8_size) * 100, 4))
+kable(table_8_size)
+```

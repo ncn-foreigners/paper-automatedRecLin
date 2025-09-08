@@ -253,3 +253,15 @@ f_s_8_eval <- evaluation(pairs_8, matches_8, n = NROW(prd_soundex_sample_8) * NR
 f_s_8_metrics <- get_metrics(f_s_8_eval[[1]], f_s_8_eval[[2]], f_s_8_eval[[3]], f_s_8_eval[[4]])
 table_fs_8 <- data.frame(rbind(round(c(n_M_est = NROW(pairs_8), (unlist(f_s_8_metrics) * 100)), 2)))
 rownames(table_fs_8) <- "fellegi_sunter"
+
+files <-c(
+  "codes/2_simulation_study_5_flr_05.Rmd",
+  "codes/2_simulation_study_3_size.Rmd",
+  "codes/2_simulation_study_3_flr_03.Rmd",
+  "codes/2_simulation_study_3_flr_05.Rmd",
+  "codes/2_simulation_study_8_flr_03.Rmd",
+  "codes/2_simulation_study_8_flr_05.Rmd"
+)
+for (file in files) {
+  rmarkdown::render(file)
+}
