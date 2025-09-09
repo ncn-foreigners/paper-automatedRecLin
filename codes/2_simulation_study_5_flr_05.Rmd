@@ -1,5 +1,5 @@
 ---
-title: "Simulation study, Scenario-II, p_A = 0.3"
+title: "Simulation study, Scenario-II, p_A = 0.5"
 output: html_document
 ---
 
@@ -93,69 +93,72 @@ Sampling.
 
 ```{r}
 set.seed(1)
-p_A_3 <- 0.3
-ids_prd_3 <- sample(ids, n_A)
-matched_individ_3 <- sample(ids_prd_3, n_A * p_A_3)
+p_A_5 <- 0.5
+ids_prd_5 <- sample(ids, n_A)
+matched_individ_5 <- sample(ids_prd_5, n_A * p_A_5)
 cis_filtered <- cis[SEX != "" & DOB_YEAR != "" & DOB_MON != ""]
 cis_filtered <- cis[SEX == "F" & as.numeric(DOB_YEAR) <= 1970 & (as.numeric(DOB_MON) %% 2) == 0]
-ids_cis_3 <- sample(setdiff(cis_filtered$PERSON_ID, ids_prd_3), n_B - n_A * p_A_3)
-ids_cis_3 <- c(matched_individ_3, ids_cis_3)
+ids_cis_5 <- sample(setdiff(cis_filtered$PERSON_ID, ids_prd_5), n_B - n_A * p_A_5)
+ids_cis_5 <- c(matched_individ_5, ids_cis_5)
 
-prd_sample_3 <- prd[PERSON_ID %in% ids_prd_3, ]
-cis_sample_3 <- cis[PERSON_ID %in% ids_cis_3, ]
-prd_soundex_sample_3 <- prd_soundex[PERSON_ID %in% ids_prd_3, ]
-cis_soundex_sample_3 <- cis_soundex[PERSON_ID %in% ids_cis_3, ]
+prd_sample_5 <- prd[PERSON_ID %in% ids_prd_5, ]
+cis_sample_5 <- cis[PERSON_ID %in% ids_cis_5, ]
+prd_soundex_sample_5 <- prd_soundex[PERSON_ID %in% ids_prd_5, ]
+cis_soundex_sample_5 <- cis_soundex[PERSON_ID %in% ids_cis_5, ]
 
-matches_3 <- merge(x = prd_sample_3[, .(x=1:.N, PERSON_ID)],
-                   y = cis_sample_3[, .(y = 1:.N, PERSON_ID)],
+matches_5 <- merge(x = prd_sample_5[, .(x=1:.N, PERSON_ID)],
+                   y = cis_sample_5[, .(y = 1:.N, PERSON_ID)],
                    by = "PERSON_ID")
-setnames(matches_3, c("x", "y"), c("a", "b"))
-set(matches_3, j = "PERSON_ID", value = NULL)
+setnames(matches_5, c("x", "y"), c("a", "b"))
+set(matches_5, j = "PERSON_ID", value = NULL)
 ```
 
-+ `r NROW(prd_sample_3)` rows in `prd_sample_3` and `prd_soundex_sample_3` datasets.
-+ `r NROW(cis_sample_3)` rows in `cis_sample_3` and `cis_soundex_sample_3` datasets.
-+ `r NROW(matches_3)` matches.
++ `r NROW(prd_sample_5)` rows in `prd_sample_5` and `prd_soundex_sample_5` datasets.
++ `r NROW(cis_sample_5)` rows in `cis_sample_5` and `cis_soundex_sample_5` datasets.
++ `r NROW(matches_5)` matches.
 
-### `set_construction = "flr"`, `target_flr == 0.03`
+### `set_construction = "size"`, `target_flr = 0.05`
 
 ```{r}
-result_3_b_list <- list()
-result_3_cpar_list <- list()
-result_3_cnonpar_list <- list()
+result_5_b_list <- list()
+result_5_cpar_list <- list()
+result_5_cnonpar_list <- list()
 
 for (seed in 1:10) {
   
   set.seed(seed)
 
-  result_3_b <- mec(prd_soundex_sample_3, cis_soundex_sample_3,
+  result_5_b <- mec(prd_soundex_sample_5, cis_soundex_sample_5,
                     variables = variables_soundex,
-                    true_matches = matches_3,
-                    set_construction = "flr")
-  result_3_cpar <- mec(prd_sample_3, cis_sample_3,
+                    true_matches = matches_5,
+                    set_construction = "flr",
+                    target_flr = 0.05)
+  result_5_cpar <- mec(prd_sample_5, cis_sample_5,
                        variables = variables,
-                       true_matches = matches_3,
+                       true_matches = matches_5,
                        comparators = comparators,
                        methods = methods_cpar,
-                       set_construction = "flr")
-  result_3_cnonpar <- mec(prd_sample_3, cis_sample_3,
+                       set_construction = "flr",
+                       target_flr = 0.05)
+  result_5_cnonpar <- mec(prd_sample_5, cis_sample_5,
                           variables = variables,
-                          true_matches = matches_3,
+                          true_matches = matches_5,
                           comparators = comparators,
                           methods = methods_cnonpar,
                           nonpar_hurdle = TRUE,
-                          set_construction = "flr")
+                          set_construction = "flr",
+                          target_flr = 0.05)
   
-  result_3_b_list[[seed]] <- result_3_b
-  result_3_cpar_list[[seed]] <- result_3_cpar
-  result_3_cnonpar_list[[seed]] <- result_3_cnonpar
+  result_5_b_list[[seed]] <- result_5_b
+  result_5_cpar_list[[seed]] <- result_5_cpar
+  result_5_cnonpar_list[[seed]] <- result_5_cnonpar
 }
 ```
 
 Comparison.
 
 ```{r}
-metrics_3_b_list <- lapply(result_3_b_list, function(x) {
+metrics_5_b_list <- lapply(result_5_b_list, function(x) {
   flr <- 1 -  (x$eval_metrics)["precision"]
   names(flr) <- NULL
   mmr <- (x$eval_metrics)["fnr"]
@@ -164,8 +167,8 @@ metrics_3_b_list <- lapply(result_3_b_list, function(x) {
     mmr_est = x$mmr_est, flr = flr, mmr = mmr,
     M_size = NROW(x$M_est) / 100)
 })
-metrics_3_b <- colMeans(do.call(rbind, metrics_3_b_list))
-metrics_3_cpar_list <- lapply(result_3_cpar_list, function(x) {
+metrics_5_b <- colMeans(do.call(rbind, metrics_5_b_list))
+metrics_5_cpar_list <- lapply(result_5_cpar_list, function(x) {
   flr <- 1 -  (x$eval_metrics)["precision"]
   names(flr) <- NULL
   mmr <- (x$eval_metrics)["fnr"]
@@ -174,8 +177,8 @@ metrics_3_cpar_list <- lapply(result_3_cpar_list, function(x) {
     mmr_est = x$mmr_est, flr = flr, mmr = mmr,
     M_size = NROW(x$M_est) / 100)
 })
-metrics_3_cpar <- colMeans(do.call(rbind, metrics_3_cpar_list))
-metrics_3_cnonpar_list <- lapply(result_3_cnonpar_list, function(x) {
+metrics_5_cpar <- colMeans(do.call(rbind, metrics_5_cpar_list))
+metrics_5_cnonpar_list <- lapply(result_5_cnonpar_list, function(x) {
   flr <- 1 -  (x$eval_metrics)["precision"]
   names(flr) <- NULL
   mmr <- (x$eval_metrics)["fnr"]
@@ -184,13 +187,13 @@ metrics_3_cnonpar_list <- lapply(result_3_cnonpar_list, function(x) {
     mmr_est = x$mmr_est, flr = flr, mmr = mmr,
     M_size = NROW(x$M_est) / 100)
 })
-metrics_3_cnonpar <- colMeans(do.call(rbind, metrics_3_cnonpar_list))
+metrics_5_cnonpar <- colMeans(do.call(rbind, metrics_5_cnonpar_list))
 
-results_3_size <- list(
-  "binary" = metrics_3_b,
-  "cpar" = metrics_3_cpar,
-  "cnonpar" = metrics_3_cnonpar
+results_5_size <- list(
+  "binary" = metrics_5_b,
+  "cpar" = metrics_5_cpar,
+  "cnonpar" = metrics_5_cnonpar
 )
-table_3_size <- data.frame(round(do.call(rbind, results_3_size) * 100, 4))
-kable(table_3_size)
+table_5_size <- data.frame(round(do.call(rbind, results_5_size) * 100, 4))
+kable(table_5_size)
 ```

@@ -11,7 +11,7 @@
 
 
 
-<title>Simulation study, Scenario-II, p_A = 0.3</title>
+<title>Simulation study, Scenario-II, p_A = 0.5</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,7 +349,7 @@ display: none;
 
 
 <h1 class="title toc-ignore">Simulation study, Scenario-II, p_A =
-0.3</h1>
+0.5</h1>
 
 </div>
 
@@ -430,66 +430,69 @@ methods_cnonpar &lt;- list(
 )</code></pre>
 <p>Sampling.</p>
 <pre class="r"><code>set.seed(1)
-p_A_3 &lt;- 0.3
-ids_prd_3 &lt;- sample(ids, n_A)
-matched_individ_3 &lt;- sample(ids_prd_3, n_A * p_A_3)
+p_A_5 &lt;- 0.5
+ids_prd_5 &lt;- sample(ids, n_A)
+matched_individ_5 &lt;- sample(ids_prd_5, n_A * p_A_5)
 cis_filtered &lt;- cis[SEX != &quot;&quot; &amp; DOB_YEAR != &quot;&quot; &amp; DOB_MON != &quot;&quot;]
 cis_filtered &lt;- cis[SEX == &quot;F&quot; &amp; as.numeric(DOB_YEAR) &lt;= 1970 &amp; (as.numeric(DOB_MON) %% 2) == 0]
-ids_cis_3 &lt;- sample(setdiff(cis_filtered$PERSON_ID, ids_prd_3), n_B - n_A * p_A_3)
-ids_cis_3 &lt;- c(matched_individ_3, ids_cis_3)
+ids_cis_5 &lt;- sample(setdiff(cis_filtered$PERSON_ID, ids_prd_5), n_B - n_A * p_A_5)
+ids_cis_5 &lt;- c(matched_individ_5, ids_cis_5)
 
-prd_sample_3 &lt;- prd[PERSON_ID %in% ids_prd_3, ]
-cis_sample_3 &lt;- cis[PERSON_ID %in% ids_cis_3, ]
-prd_soundex_sample_3 &lt;- prd_soundex[PERSON_ID %in% ids_prd_3, ]
-cis_soundex_sample_3 &lt;- cis_soundex[PERSON_ID %in% ids_cis_3, ]
+prd_sample_5 &lt;- prd[PERSON_ID %in% ids_prd_5, ]
+cis_sample_5 &lt;- cis[PERSON_ID %in% ids_cis_5, ]
+prd_soundex_sample_5 &lt;- prd_soundex[PERSON_ID %in% ids_prd_5, ]
+cis_soundex_sample_5 &lt;- cis_soundex[PERSON_ID %in% ids_cis_5, ]
 
-matches_3 &lt;- merge(x = prd_sample_3[, .(x=1:.N, PERSON_ID)],
-                   y = cis_sample_3[, .(y = 1:.N, PERSON_ID)],
+matches_5 &lt;- merge(x = prd_sample_5[, .(x=1:.N, PERSON_ID)],
+                   y = cis_sample_5[, .(y = 1:.N, PERSON_ID)],
                    by = &quot;PERSON_ID&quot;)
-setnames(matches_3, c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;, &quot;b&quot;))
-set(matches_3, j = &quot;PERSON_ID&quot;, value = NULL)</code></pre>
+setnames(matches_5, c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;, &quot;b&quot;))
+set(matches_5, j = &quot;PERSON_ID&quot;, value = NULL)</code></pre>
 <ul>
-<li>500 rows in <code>prd_sample_3</code> and
-<code>prd_soundex_sample_3</code> datasets.</li>
-<li>1000 rows in <code>cis_sample_3</code> and
-<code>cis_soundex_sample_3</code> datasets.</li>
-<li>150 matches.</li>
+<li>500 rows in <code>prd_sample_5</code> and
+<code>prd_soundex_sample_5</code> datasets.</li>
+<li>1000 rows in <code>cis_sample_5</code> and
+<code>cis_soundex_sample_5</code> datasets.</li>
+<li>250 matches.</li>
 </ul>
-<div id="set_construction-flr-target_flr-0.03" class="section level3">
-<h3><code>set_construction = &quot;flr&quot;</code>,
-<code>target_flr == 0.03</code></h3>
-<pre class="r"><code>result_3_b_list &lt;- list()
-result_3_cpar_list &lt;- list()
-result_3_cnonpar_list &lt;- list()
+<div id="set_construction-size-target_flr-0.05" class="section level3">
+<h3><code>set_construction = &quot;size&quot;</code>,
+<code>target_flr = 0.05</code></h3>
+<pre class="r"><code>result_5_b_list &lt;- list()
+result_5_cpar_list &lt;- list()
+result_5_cnonpar_list &lt;- list()
 
 for (seed in 1:10) {
   
   set.seed(seed)
 
-  result_3_b &lt;- mec(prd_soundex_sample_3, cis_soundex_sample_3,
+  result_5_b &lt;- mec(prd_soundex_sample_5, cis_soundex_sample_5,
                     variables = variables_soundex,
-                    true_matches = matches_3,
-                    set_construction = &quot;flr&quot;)
-  result_3_cpar &lt;- mec(prd_sample_3, cis_sample_3,
+                    true_matches = matches_5,
+                    set_construction = &quot;flr&quot;,
+                    target_flr = 0.05)
+  result_5_cpar &lt;- mec(prd_sample_5, cis_sample_5,
                        variables = variables,
-                       true_matches = matches_3,
+                       true_matches = matches_5,
                        comparators = comparators,
                        methods = methods_cpar,
-                       set_construction = &quot;flr&quot;)
-  result_3_cnonpar &lt;- mec(prd_sample_3, cis_sample_3,
+                       set_construction = &quot;flr&quot;,
+                       target_flr = 0.05)
+  result_5_cnonpar &lt;- mec(prd_sample_5, cis_sample_5,
                           variables = variables,
-                          true_matches = matches_3,
+                          true_matches = matches_5,
                           comparators = comparators,
                           methods = methods_cnonpar,
                           nonpar_hurdle = TRUE,
-                          set_construction = &quot;flr&quot;)
+                          set_construction = &quot;flr&quot;,
+                          target_flr = 0.05)
   
-  result_3_b_list[[seed]] &lt;- result_3_b
-  result_3_cpar_list[[seed]] &lt;- result_3_cpar
-  result_3_cnonpar_list[[seed]] &lt;- result_3_cnonpar
+  result_5_b_list[[seed]] &lt;- result_5_b
+  result_5_cpar_list[[seed]] &lt;- result_5_cpar
+  result_5_cnonpar_list[[seed]] &lt;- result_5_cnonpar
 }</code></pre>
 <p>Comparison.</p>
-<pre class="r"><code>metrics_3_b_list &lt;- lapply(result_3_b_list, function(x) {
+<pre class="r"><code>metrics_5_b_list &lt;- lapply(result_5_b_list, function(x) {
   flr &lt;- 1 -  (x$eval_metrics)[&quot;precision&quot;]
   names(flr) &lt;- NULL
   mmr &lt;- (x$eval_metrics)[&quot;fnr&quot;]
@@ -498,8 +501,8 @@ for (seed in 1:10) {
     mmr_est = x$mmr_est, flr = flr, mmr = mmr,
     M_size = NROW(x$M_est) / 100)
 })
-metrics_3_b &lt;- colMeans(do.call(rbind, metrics_3_b_list))
-metrics_3_cpar_list &lt;- lapply(result_3_cpar_list, function(x) {
+metrics_5_b &lt;- colMeans(do.call(rbind, metrics_5_b_list))
+metrics_5_cpar_list &lt;- lapply(result_5_cpar_list, function(x) {
   flr &lt;- 1 -  (x$eval_metrics)[&quot;precision&quot;]
   names(flr) &lt;- NULL
   mmr &lt;- (x$eval_metrics)[&quot;fnr&quot;]
@@ -508,8 +511,8 @@ metrics_3_cpar_list &lt;- lapply(result_3_cpar_list, function(x) {
     mmr_est = x$mmr_est, flr = flr, mmr = mmr,
     M_size = NROW(x$M_est) / 100)
 })
-metrics_3_cpar &lt;- colMeans(do.call(rbind, metrics_3_cpar_list))
-metrics_3_cnonpar_list &lt;- lapply(result_3_cnonpar_list, function(x) {
+metrics_5_cpar &lt;- colMeans(do.call(rbind, metrics_5_cpar_list))
+metrics_5_cnonpar_list &lt;- lapply(result_5_cnonpar_list, function(x) {
   flr &lt;- 1 -  (x$eval_metrics)[&quot;precision&quot;]
   names(flr) &lt;- NULL
   mmr &lt;- (x$eval_metrics)[&quot;fnr&quot;]
@@ -518,15 +521,15 @@ metrics_3_cnonpar_list &lt;- lapply(result_3_cnonpar_list, function(x) {
     mmr_est = x$mmr_est, flr = flr, mmr = mmr,
     M_size = NROW(x$M_est) / 100)
 })
-metrics_3_cnonpar &lt;- colMeans(do.call(rbind, metrics_3_cnonpar_list))
+metrics_5_cnonpar &lt;- colMeans(do.call(rbind, metrics_5_cnonpar_list))
 
-results_3_size &lt;- list(
-  &quot;binary&quot; = metrics_3_b,
-  &quot;cpar&quot; = metrics_3_cpar,
-  &quot;cnonpar&quot; = metrics_3_cnonpar
+results_5_size &lt;- list(
+  &quot;binary&quot; = metrics_5_b,
+  &quot;cpar&quot; = metrics_5_cpar,
+  &quot;cnonpar&quot; = metrics_5_cnonpar
 )
-table_3_size &lt;- data.frame(round(do.call(rbind, results_3_size) * 100, 4))
-kable(table_3_size)</code></pre>
+table_5_size &lt;- data.frame(round(do.call(rbind, results_5_size) * 100, 4))
+kable(table_5_size)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -542,30 +545,30 @@ kable(table_3_size)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">binary</td>
-<td align="right">189.9633</td>
-<td align="right">3.1514</td>
-<td align="right">8.8356</td>
-<td align="right">12.0479</td>
-<td align="right">6.2000</td>
-<td align="right">165.8</td>
+<td align="right">255.6844</td>
+<td align="right">5.0007</td>
+<td align="right">2.5752</td>
+<td align="right">9.4525</td>
+<td align="right">5.04</td>
+<td align="right">262.2</td>
 </tr>
 <tr class="even">
 <td align="left">cpar</td>
-<td align="right">139.3448</td>
-<td align="right">2.6242</td>
-<td align="right">0.0699</td>
-<td align="right">1.3986</td>
-<td align="right">6.0000</td>
-<td align="right">143.0</td>
+<td align="right">247.5478</td>
+<td align="right">5.1500</td>
+<td align="right">0.3000</td>
+<td align="right">6.5346</td>
+<td align="right">2.72</td>
+<td align="right">260.2</td>
 </tr>
 <tr class="odd">
 <td align="left">cnonpar</td>
-<td align="right">136.7641</td>
-<td align="right">2.8703</td>
-<td align="right">3.2152</td>
-<td align="right">2.1300</td>
-<td align="right">11.0667</td>
-<td align="right">136.3</td>
+<td align="right">232.7895</td>
+<td align="right">4.8797</td>
+<td align="right">0.7899</td>
+<td align="right">3.2952</td>
+<td align="right">6.08</td>
+<td align="right">242.8</td>
 </tr>
 </tbody>
 </table>
